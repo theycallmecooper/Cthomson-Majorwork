@@ -1,0 +1,124 @@
+<!--Hello World-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dangerous Species Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            background-color: #5b8a44;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .navbar {
+            background-color: #3a6f35;
+        }
+        .navbar-brand {
+            color: white !important;
+        }
+        .btn-find {
+            background-color: #3a6f35;
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            border-radius: 5px;
+        }
+        .btn-find:hover {
+            background-color: #2f5b2a;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .map-container {
+            height: 500px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background-color: #e1f4e0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Dangerous Species Finder</a>
+        </div>
+    </nav>
+
+    <header class="header">
+        <h1>Find Dangerous Species Near You</h1>
+        <p>Click the button below to find out!</p>
+    </header>
+
+    <div class="container mt-4">
+        <div class="text-center">
+            <button id="findSpeciesBtn" class="btn-find">Find Species</button>
+        </div>
+
+        <div id="species-list" class="mt-4"></div>
+
+        <!-- Map container -->
+        <div id="speciesResults" class="map-container"></div>
+    </div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            fetch(`/species?lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
+                .then(response => response.json())
+                .then(data => displaySpecies(data))
+                .catch(error => console.error("Error fetching species:", error));
+        }
+
+        function showError(error) {
+            alert("Error getting location: " + error.message);
+        }
+
+        function displaySpecies(species) {
+            let container = document.getElementById("species-list");
+            container.innerHTML = "";
+            if (species.length === 0) {
+                container.innerHTML = "<p class='text-center text-danger'>No dangerous species found nearby.</p>";
+                return;
+            }
+            species.forEach(sp => {
+                container.innerHTML += `
+                    <div class='card mt-2'>
+                        <div class='card-body'>
+                            <h5 class='card-title'>${sp.name}</h5>
+                            <h6 class='card-subtitle mb-2 text-muted'>${sp.scientificName}</h6>
+                            <p class='card-text'>${sp.danger}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('findSpeciesBtn').addEventListener('click', getLocation);
+    </script>
+
+    <!-- Include React and ReactDOM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+    <!-- Include Babel for JSX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <!-- Include your React Leaflet Component -->
+    <script type="text/babel" src="leaflet.js"></script>
+</body>
+</html>

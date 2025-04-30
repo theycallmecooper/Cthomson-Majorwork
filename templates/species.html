@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dangerous Species</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4; /* Light earthy background */
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            background-color: #5b8a44; /* Bush green */
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .navbar {
+            background-color: #3a6f35; /* Darker green */
+        }
+        .navbar-brand {
+            color: white !important;
+        }
+        .species-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .card {
+            background-color: #e1f4e0; /* Light green for species cards */
+        }
+        .card-body {
+            color: #3a6f35; /* Bush green text */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Dangerous Species Finder</a>
+        </div>
+    </nav>
+
+    <header class="header">
+        <h1>Dangerous Species Found Near You</h1>
+    </header>
+
+    <div class="container mt-4">
+        <div id="species-list">
+            {% if species %}
+                {% for sp in species %}
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ sp.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ sp.scientificName }}</h6>
+                            <p class="card-text">{{ sp.danger }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-danger">No dangerous species found nearby.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
