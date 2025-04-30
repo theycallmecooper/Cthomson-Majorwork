@@ -1,22 +1,13 @@
-import requests
-from flask import Flask, jsonify, request, render_template
-from flask_cors import CORS
+may not be useful but i'll keep just in case
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
-CORS(app)
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/species", methods=["GET"])
-def get_species_json():
-    """Returns species data as JSON (used by frontend JavaScript or Leaflet)."""
+@app.route("/species.html")
+def species_page():
+    """Renders the species.html template with species near the user."""
     lat = request.args.get("lat", type=float)
     lng = request.args.get("lng", type=float)
 
     if lat is None or lng is None:
-        return jsonify({"error": "Missing lat/lng"}), 400
+        return "Missing coordinates", 400
 
     ala_url = "https://biocache.ala.org.au/ws/occurrences/search"
     params = {
@@ -38,13 +29,8 @@ def get_species_json():
                 "name": record.get("commonName", "Unknown"),
                 "scientificName": record.get("scientificName", "Unknown"),
                 "danger": "Unknown – sourced from ALA.",
-                "lat": record.get("decimalLatitude"),
-                "lng": record.get("decimalLongitude")
             })
 
-        return jsonify(species_data)
+        return render_template("species.html", species=species_data)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
-    app.run(debug=True)
+        return f"Error fetching data: {str(e)}", 500
