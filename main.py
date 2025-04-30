@@ -22,7 +22,7 @@ def get_species_json():
     params = {
         "lat": lat,
         "lon": lng,
-        "radius": 5,  # radius in km
+        "radius": 10,  # radius in km
         "pageSize": 10,
         "fq": "country:Australia",
     }
@@ -46,7 +46,7 @@ def get_species_json():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/species-page")
+@app.route("/species.html")
 def species_page():
     """Renders the species.html template with species near the user."""
     lat = request.args.get("lat", type=float)
@@ -59,7 +59,7 @@ def species_page():
     params = {
         "lat": lat,
         "lon": lng,
-        "radius": 5,
+        "radius": 10,  # radius in km
         "pageSize": 10,
         "fq": "country:Australia",
     }
