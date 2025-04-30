@@ -8,24 +8,36 @@ def get_species():
     lat = request.args.get("lat", type=float)
     lng = request.args.get("lng", type=float)
 
-    # ALA API URL for occurrence search
-    url = f"https://api.ala.org.au/occurrences/search?lat={lat}&lon={lng}&radius=50&limit=10&fq=taxonConceptId:4481752"  # Example filter for dangerous species
-    response = requests.get(url)
-    data = response.json()
+    if lat is None or lng is None:
+        return jsonify({"error": "Missing lat/lng"}), 400
 
-    # Extract relevant information from ALA API response
-    species_data = []
-    for occurrence in data['response']['docs']:
-        species_data.append({
-            "name": occurrence['scientificName'],
-            "common_name": occurrence.get('commonName', 'Unknown'),
-            "danger": "⚠️ Danger info needs to be added",  # You can add danger tags based on the species
-            "lat": occurrence['decimalLatitude'],
-            "lng": occurrence['decimalLongitude'],
-            "image": occurrence.get('imageURL', None)
-        })
+    ala_url = "https://biocache.ala.org.au/ws/occurrences/search"
+    params = {
+        "lat": lat,
+        "lon": lng,
+        "radius": 5,  # radius in km
+        "pageSize": 10,  # how many results to fetch
+        "fq": "country:Australia",  # filter query
+    }
 
-    return jsonify(species_data)
+    try:
+        response = requests.get(ala_url, params=params)
+        response.raise_for_status()
+        data = response.json()
 
+        species_data = []
+        for record in data.get("results", []):
+            species_data.append({
+                "name": record.get("commonName", "Unknown"),
+                "scientificName": record.get("scientificName", "Unknown"),
+                "danger": "Unknown – sourced from ALA.",  # You can enhance this later
+                "lat": record.get("decimalLatitude"),
+                "lng": record.get("decimalLongitude")
+            })
+
+        return jsonify(species_data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 if __name__ == "__main__":
     app.run(debug=True)
