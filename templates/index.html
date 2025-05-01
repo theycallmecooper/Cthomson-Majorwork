@@ -43,6 +43,13 @@
             margin-top: 20px;
             background-color: #e1f4e0;
         }
+        .info-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -54,12 +61,24 @@
 
     <header class="header">
         <h1>Find Dangerous Species Near You</h1>
-        <p>Click the button below to find out!</p>
+        <p>Learn about potentially harmful animals or plants in your area using your location.</p>
     </header>
 
     <div class="container mt-4">
+        <!-- Info Section -->
+        <div class="info-section">
+            <h3>About This App</h3>
+            <p>This application uses data from the Atlas of Living Australia (ALA) to help you identify potentially dangerous species (animals, insects, or plants) that may exist near your current location. It can be useful for hikers, campers, or anyone curious about the natural surroundings.</p>
+        </div>
+
+        <!-- Random Fact Section -->
+        <div class="info-section" id="random-fact">
+            <h3>Random Aussie Animal Fact</h3>
+            <p id="fact-text">Loading...</p>
+        </div>
+
         <div class="text-center">
-            <button id="findSpeciesBtn" class="btn-find">Find Species</button>
+            <button id="findSpeciesBtn" class="btn-find">Find Species Near Me</button>
         </div>
 
         <div id="species-list" class="mt-4"></div>
@@ -69,6 +88,22 @@
     </div>
 
     <script>
+        const facts = [
+            "The platypus is one of the only mammals that lays eggs.",
+            "Koalas sleep up to 18-22 hours a day.",
+            "Cassowaries are among the most dangerous birds in the world.",
+            "A kangaroo can't walk backwards.",
+            "Wombats have cube-shaped poop to stop it from rolling away!",
+            "The thorny devil can collect water through its skin grooves.",
+            "Australia is home to 21 of the world's 25 most venomous snakes."
+        ];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const factText = document.getElementById("fact-text");
+            const randomIndex = Math.floor(Math.random() * facts.length);
+            factText.textContent = facts[randomIndex];
+        });
+
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
