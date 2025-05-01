@@ -51,7 +51,7 @@
   </nav>
 
   <header class="header">
-    <h1>Find Dangerous Species Near You</h1>
+    <h1>Find Species Near You</h1>
     <p>Automatically with GPS or by entering coordinates.</p>
   </header>
 
@@ -61,7 +61,7 @@
       <div class="col-md-6">
         <h4>🔍 What does this app do?</h4>
         <p>
-          This tool helps you discover potentially dangerous or venomous species in your area — anywhere in Australia. We source real-time data from the <strong>Atlas of Living Australia</strong>.
+          This tool helps you discover species in your area — anywhere in Australia. We source real-time data from the <strong>Atlas of Living Australia</strong>.
         </p>
 
         <div class="mt-4">
@@ -122,7 +122,7 @@
       const container = document.getElementById("species-list");
       container.innerHTML = "";
       if (species.length === 0) {
-        container.innerHTML = "<p class='text-center text-danger'>No dangerous species found nearby.</p>";
+        container.innerHTML = "<p class='text-center text-danger'>No species found nearby.</p>";
         return;
       }
       species.forEach(sp => {
@@ -131,7 +131,8 @@
             <div class="card-body">
               <h5 class="card-title">${sp.name}</h5>
               <h6 class="card-subtitle mb-2 text-muted">${sp.scientificName}</h6>
-              <p class="card-text">${sp.danger}</p>
+              <p class="card-text">Latitude: ${sp.lat}</p>
+              <p class="card-text">Longitude: ${sp.lng}</p>
             </div>
           </div>
         `;

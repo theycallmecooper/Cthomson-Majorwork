@@ -11,20 +11,20 @@ def home():
 
 @app.route("/species", methods=["GET"])
 def get_species_json():
-    """Returns species data as JSON (used by frontend JavaScript or Leaflet)."""
     lat = request.args.get("lat", type=float)
     lng = request.args.get("lng", type=float)
 
     if lat is None or lng is None:
         return jsonify({"error": "Missing lat/lng"}), 400
 
-    ala_url = "https://biocache.ala.org.au/ws/occurrences/search"
+    # ALA API URL and parameters
+    ala_url = "https://biocache-ws.ala.org.au/ws/occurrences/search"
     params = {
         "lat": lat,
         "lon": lng,
-        "radius": 10,  # radius in km
-        "pageSize": 10,
-        "fq": "country:Australia",
+        "radius": 20,  # Radius in km
+        "fq": "kingdom:Animalia",  # Only animals
+        "pageSize": 50,  # Fetch more results
     }
 
     try:
@@ -37,9 +37,9 @@ def get_species_json():
             species_data.append({
                 "name": record.get("commonName", "Unknown"),
                 "scientificName": record.get("scientificName", "Unknown"),
-                "danger": "Unknown – sourced from ALA.",
                 "lat": record.get("decimalLatitude"),
-                "lng": record.get("decimalLongitude")
+                "lng": record.get("decimalLongitude"),
+                "danger": "Not flagged as dangerous"  # Placeholder for future use
             })
 
         return jsonify(species_data)
