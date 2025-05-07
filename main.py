@@ -2,9 +2,59 @@ import requests
 import time
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
+from openai import OpenAI
+
+# Initialize OpenAI client
+openai_client = OpenAI(api_key="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")
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
+
+def analyze_species_danger(species_list):
+    """
+    Use OpenAI's API to analyze the danger level of species
+    
+    Args:
+        species_list (list): List of species dictionaries
+    
+    Returns:
+        list: Updated list with danger assessments
+    """
+    try:
+        # Only send necessary data to OpenAI to reduce token usage
+        simplified_species = []
+        for species in species_list:
+            simplified_species.append({
+                "scientific_name": species["scientific_name"],
+                "common_name": species["common_name"]
+            })
+        
+        response = openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant specialized in Australian wildlife."},
+                {"role": "user", "content": f"I will provide you with a list of species. Please assess each species and determine if it's dangerous to humans on a scale of 1-10, where 10 is extremely dangerous. For each species, provide: common name, scientific name, danger rating, and a brief explanation of any hazards. Only list species with a danger rating of 3 or higher. Here's the list: {simplified_species}"}
+            ],
+            max_tokens=500,
+            temperature=0.7
+        )
+        
+        # Extract danger information from OpenAI's response
+        danger_info = response.choices[0].message.content.strip()
+        
+        # We'll update our species list with danger ratings where possible
+        # This is a simplified approach; in a production app you would parse the response more carefully
+        for species in species_list:
+            if species["scientific_name"] in danger_info:
+                species_info = danger_info.split(species["scientific_name"])[1].split("\n")[0]
+                if "dangerous" in species_info.lower() or "venomous" in species_info.lower() or "toxic" in species_info.lower():
+                    species["danger"] = species_info.strip()
+        
+        return species_list
+    except Exception as e:
+        print(f"Error analyzing species danger: {e}")
+        # If OpenAI analysis fails, return the original list unchanged
+        return species_list
 
 def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom=None):
     """
@@ -63,12 +113,16 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
                 "common_name": record.get("vernacularName", "No common name"),
                 "lat": record.get("decimalLatitude"),
                 "lng": record.get("decimalLongitude"),
-                "danger": "Not flagged as dangerous"  # Placeholder for future use
+                "danger": "Not flagged as dangerous"  # Default value
             }
             
             # Add to our species list if not already present
             if species_info not in species_list:
                 species_list.append(species_info)
+        
+        # Use OpenAI to analyze species danger levels
+        if species_list:
+            species_list = analyze_species_danger(species_list)
 
         print(species_list)    
         return {"species": species_list, "total_records": total_records}
@@ -150,7 +204,7 @@ def test_location(name, latitude, longitude, radius=10000):
         print(f"Found {result['total_records']} total records")
         print(f"Sample of {len(result['species'])} species:")
         for i, sp in enumerate(result['species'], 1):
-            print(f"{i}. {sp['scientific_name']} - {sp['common_name']}")
+            print(f"{i}. {sp['scientific_name']} - {sp['common_name']} - {sp['danger']}")
     else:
         print(f"No species found at this location or an error occurred.")
 
