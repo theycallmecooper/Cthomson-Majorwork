@@ -51,7 +51,7 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
             
         # Parse the JSON response
         data = response.json()
-        
+
         # Get total count
         total_records = data.get("totalRecords", 0)
         
@@ -69,7 +69,8 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
             # Add to our species list if not already present
             if species_info not in species_list:
                 species_list.append(species_info)
-                
+
+        print(species_list)    
         return {"species": species_list, "total_records": total_records}
         
     except Exception as e:
