@@ -132,8 +132,16 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
         return {"species": [], "total_records": 0}
 
 @app.route("/")
-def home():
+def index():
+    return render_template("home.html")
+
+@app.route("/species-finder")
+def species_finder():
     return render_template("index.html")
+
+@app.route("/toxicology")
+def toxicology():
+    return render_template("toxicology.html")
 
 @app.route("/species", methods=["GET"])
 def get_species_json():
