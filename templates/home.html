@@ -1,0 +1,134 @@
+<!-- This is the main HTML template for the Australian Wildlife Safety application. It includes Bootstrap for styling and layout. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Wildlife Safety</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            background-color: #4b2e83;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            border-bottom: 5px solid #85754d;
+        }
+        .navbar {
+            background-color: #332160;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+        }
+        .button-card {
+            height: 350px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .button-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .species-card {
+            background-color: #e1f4e0;
+            border-left: 5px solid #3a6f35;
+        }
+        .species-card .card-header {
+            background-color: #5b8a44;
+            color: white;
+        }
+        .toxicology-card {
+            background-color: #f0e6ff;
+            border-left: 5px solid #6a4c93;
+        }
+        .toxicology-card .card-header {
+            background-color: #6a4c93;
+            color: white;
+        }
+        .card-icon {
+            font-size: 64px;
+            margin: 20px 0;
+        }
+        .footer {
+            background-color: #4b2e83;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Australian Wildlife Safety</a>
+        </div>
+    </nav>
+
+    <header class="header">
+        <div class="container">
+            <h1 class="display-4">Australian Wildlife Safety</h1>
+            <p class="lead">Identify dangerous species and access toxicology information</p>
+        </div>
+    </header>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card button-card species-card">
+                    <div class="card-header">
+                        <h4>Species Finder</h4>
+                    </div>
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="card-icon">🔍</div>
+                            <p class="card-text">Find and identify potentially dangerous species near your location using GPS or coordinates.</p>
+                        </div>
+                        <a href="/species-finder" class="btn btn-success btn-lg mt-3">Open Species Finder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card button-card toxicology-card">
+                    <div class="card-header">
+                        <h4>Toxicology Handbook</h4>
+                    </div>
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="card-icon">📚</div>
+                            <p class="card-text">Access detailed information about toxins, treatments, and first aid for Australian wildlife encounters.</p>
+                        </div>
+                        <a href="/toxicology" class="btn btn-primary btn-lg mt-3" style="background-color: #6a4c93; border-color: #6a4c93;">Open Toxicology Handbook</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="alert alert-info" role="alert">
+                    <h4>Welcome to Australian Wildlife Safety</h4>
+                    <p>This application helps you identify potentially dangerous Australian wildlife in your area and provides 
+                    toxicology information to assist in emergency situations. Please note that this is an educational tool and 
+                    should not replace professional medical advice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Australian Wildlife Safety App</p>
+            <p><small>For educational purposes only. Always seek medical attention in case of wildlife incidents.</small></p>
+        </div>
+    </footer>
+</body>
+</html>

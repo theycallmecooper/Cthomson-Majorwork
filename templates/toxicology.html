@@ -1,0 +1,347 @@
+<!-- This is the main HTML template for the Australian Wildlife Safety application. It includes Bootstrap for styling and layout. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toxicology Handbook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f5ff;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        .header {
+            background-color: #6a4c93;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            background-color: #4b2e83;
+        }
+        .navbar-brand {
+            color: white !important;
+        }
+        .card {
+            background-color: #fff;
+            border-left: 4px solid #6a4c93;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        .card-header {
+            background-color: #e0d5f2;
+            font-weight: bold;
+            color: #4b2e83;
+            border-bottom: 1px solid #d5c8eb;
+        }
+        h2, h3, h4 {
+            color: #4b2e83;
+        }
+        .btn-primary {
+            background-color: #6a4c93;
+            border-color: #6a4c93;
+        }
+        .btn-primary:hover {
+            background-color: #5a3d82;
+            border-color: #5a3d82;
+        }
+        .treatment-box {
+            background-color: #e0d5f2;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .emergency-box {
+            background-color: #ffebe6;
+            border-left: 4px solid #d9534f;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .search-area {
+            background-color: #e0d5f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .sidebar {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar ul {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .sidebar li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0d5f2;
+        }
+        .sidebar a {
+            color: #6a4c93;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            color: #4b2e83;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Australian Wildlife Safety</a>
+        </div>
+    </nav>
+
+    <header class="header">
+        <div class="container">
+            <h1>Australian Wildlife Toxicology Handbook</h1>
+            <p class="lead">Information on venoms, toxins, and treatments for Australian wildlife encounters</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <!-- Main Content Area -->
+            <div class="col-md-8">
+                <div class="search-area">
+                    <h4>Search Toxins & Treatments</h4>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search by species, symptom, or treatment...">
+                        <button class="btn btn-primary" type="button" id="searchButton">Search</button>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-secondary me-1">Snake Venom</button>
+                        <button class="btn btn-sm btn-outline-secondary me-1">Spider Bites</button>
+                        <button class="btn btn-sm btn-outline-secondary me-1">Marine Stings</button>
+                        <button class="btn btn-sm btn-outline-secondary me-1">First Aid</button>
+                    </div>
+                </div>
+
+                <div class="emergency-box">
+                    <h4 class="text-danger">Emergency Information</h4>
+                    <p><strong>In case of a bite or sting:</strong> Call emergency services immediately (000 in Australia).</p>
+                    <p><strong>Poison Information Center:</strong> 13 11 26 (Australia)</p>
+                </div>
+
+                <h2>Common Venoms & Toxins</h2>
+                
+                <!-- Snake section -->
+                <div class="card">
+                    <div class="card-header" id="snakes">
+                        Snake Venoms
+                    </div>
+                    <div class="card-body">
+                        <h5>Eastern Brown Snake (Pseudonaja textilis)</h5>
+                        <p><strong>Venom type:</strong> Primarily neurotoxic and coagulopathic</p>
+                        <p><strong>Effects:</strong> Disrupts blood clotting, causes paralysis, kidney damage</p>
+                        <p><strong>Symptoms:</strong> Headache, nausea, abdominal pain, vomiting, dizziness, collapse</p>
+                        
+                        <div class="treatment-box">
+                            <h6>Treatment</h6>
+                            <ul>
+                                <li>Pressure immobilization technique</li>
+                                <li>Brown Snake Antivenom</li>
+                                <li>Hospitalization and monitoring</li>
+                            </ul>
+                        </div>
+
+                        <hr>
+                        
+                        <h5>Tiger Snake (Notechis scutatus)</h5>
+                        <p><strong>Venom type:</strong> Neurotoxic, myotoxic, coagulopathic</p>
+                        <p><strong>Effects:</strong> Affects nervous system, muscles, blood clotting</p>
+                        <p><strong>Symptoms:</strong> Pain at bite site, sweating, difficulty speaking/breathing</p>
+                        
+                        <div class="treatment-box">
+                            <h6>Treatment</h6>
+                            <ul>
+                                <li>Pressure immobilization technique</li>
+                                <li>Tiger Snake Antivenom</li>
+                                <li>Hospitalization and monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spider section -->
+                <div class="card mt-4">
+                    <div class="card-header" id="spiders">
+                        Spider Venoms
+                    </div>
+                    <div class="card-body">
+                        <h5>Sydney Funnel-web Spider (Atrax robustus)</h5>
+                        <p><strong>Venom type:</strong> Neurotoxic</p>
+                        <p><strong>Effects:</strong> Affects nervous system, causes massive release of neurotransmitters</p>
+                        <p><strong>Symptoms:</strong> Severe pain, sweating, muscle spasms, high blood pressure</p>
+                        
+                        <div class="treatment-box">
+                            <h6>Treatment</h6>
+                            <ul>
+                                <li>Pressure immobilization technique</li>
+                                <li>Funnel-web Spider Antivenom</li>
+                                <li>Immediate medical attention</li>
+                            </ul>
+                        </div>
+
+                        <hr>
+                        
+                        <h5>Redback Spider (Latrodectus hasselti)</h5>
+                        <p><strong>Venom type:</strong> Neurotoxic</p>
+                        <p><strong>Effects:</strong> Causes pain and systemic effects</p>
+                        <p><strong>Symptoms:</strong> Local pain, sweating, headache, nausea, abdominal pain</p>
+                        
+                        <div class="treatment-box">
+                            <h6>Treatment</h6>
+                            <ul>
+                                <li>Ice pack for pain relief</li>
+                                <li>Redback Spider Antivenom for severe cases</li>
+                                <li>Medical attention</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Marine section -->
+                <div class="card mt-4">
+                    <div class="card-header" id="marine">
+                        Marine Toxins
+                    </div>
+                    <div class="card-body">
+                        <h5>Box Jellyfish (Chironex fleckeri)</h5>
+                        <p><strong>Venom type:</strong> Cytotoxic, cardiotoxic, neurotoxic</p>
+                        <p><strong>Effects:</strong> Severe pain, skin damage, potential cardiac arrest</p>
+                        <p><strong>Symptoms:</strong> Immediate severe pain, red welts, respiratory distress</p>
+                        
+                        <div class="treatment-box">
+                            <h6>Treatment</h6>
+                            <ul>
+                                <li>Vinegar to inactivate stinging cells</li>
+                                <li>Box Jellyfish Antivenom for severe cases</li>
+                                <li>CPR if necessary</li>
+                                <li>Immediate medical attention</li>
+                            </ul>
+                        </div>
+
+                        <hr>
+                        
+                        <h5>Blue-ringed Octopus (Hapalochlaena spp.)</h5>
+                        <p><strong>Venom type:</strong> Tetrodotoxin (TTX)</p>
+                        <p><strong>Effects:</strong> Blocks nerve signals, causes muscle paralysis</p>
+                        <p><strong>Symptoms:</strong> Numbness, nausea, vision changes, difficulty breathing, paralysis</p>
+                        
+                        <div class="treatment-box">
+                            <h6>Treatment</h6>
+                            <ul>
+                                <li>Pressure immobilization technique</li>
+                                <li>Artificial respiration if needed</li>
+                                <li>Immediate medical attention</li>
+                                <li>Supportive care until toxin clears (no antivenom available)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="mt-4">First Aid Techniques</h2>
+                <div class="card">
+                    <div class="card-header" id="first-aid">
+                        Pressure Immobilization Technique
+                    </div>
+                    <div class="card-body">
+                        <p>This technique is recommended for potentially life-threatening venomous bites and stings including those from snakes, funnel-web spiders, and blue-ringed octopuses.</p>
+                        
+                        <ol>
+                            <li>Apply a firm bandage over the bite site and extend to cover the entire limb</li>
+                            <li>Keep the bandage firm but not too tight (should be able to slide a finger under)</li>
+                            <li>Immobilize the limb with a splint or sling</li>
+                            <li>Keep the patient still and calm</li>
+                            <li>Seek immediate medical attention</li>
+                        </ol>
+                        
+                        <div class="alert alert-warning">
+                            <strong>Note:</strong> Do NOT wash the bite area as venom on the skin can help identify the species.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="sidebar">
+                    <h4>Quick Navigation</h4>
+                    <ul>
+                        <li><a href="#snakes">Snake Venoms</a></li>
+                        <li><a href="#spiders">Spider Venoms</a></li>
+                        <li><a href="#marine">Marine Toxins</a></li>
+                        <li><a href="#first-aid">First Aid Techniques</a></li>
+                    </ul>
+                    
+                    <h4 class="mt-4">Resources</h4>
+                    <ul>
+                        <li><a href="#">Australian Snakebite Protocol</a></li>
+                        <li><a href="#">Toxinology Database</a></li>
+                        <li><a href="#">Emergency Response Guide</a></li>
+                    </ul>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        Antivenom Information
+                    </div>
+                    <div class="card-body">
+                        <p>Australia has specific antivenoms for:</p>
+                        <ul>
+                            <li>Brown Snake</li>
+                            <li>Tiger Snake</li>
+                            <li>Black Snake</li>
+                            <li>Death Adder</li>
+                            <li>Taipan</li>
+                            <li>Sea Snake</li>
+                            <li>Funnel-web Spider</li>
+                            <li>Redback Spider</li>
+                            <li>Box Jellyfish</li>
+                        </ul>
+                        <p><small>Administered by medical professionals only. Polyvalent antivenom is available for when the snake species cannot be identified.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4 mb-5">
+        <a href="/" class="btn btn-secondary">← Back to Home</a>
+    </div>
+
+    <script>
+        // Simple search functionality (placeholder - would need backend integration for real search)
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const searchQuery = document.querySelector('.search-area input').value.toLowerCase();
+            
+            // Very basic client-side search example
+            if (searchQuery.includes('snake')) {
+                document.getElementById('snakes').scrollIntoView({behavior: 'smooth'});
+            } else if (searchQuery.includes('spider')) {
+                document.getElementById('spiders').scrollIntoView({behavior: 'smooth'});
+            } else if (searchQuery.includes('jellyfish') || searchQuery.includes('octopus')) {
+                document.getElementById('marine').scrollIntoView({behavior: 'smooth'});
+            } else if (searchQuery.includes('first aid') || searchQuery.includes('pressure')) {
+                document.getElementById('first-aid').scrollIntoView({behavior: 'smooth'});
+            }
+        });
+    </script>
+</body>
+</html>
