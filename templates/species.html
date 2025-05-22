@@ -25,9 +25,23 @@
         .card {
             background-color: #e1f4e0;
             margin-bottom: 15px;
+            border-left: 4px solid #3a6f35;
         }
         .card-body {
             color: #3a6f35;
+        }
+        /* New badge styling */
+        .badge.bg-purple {
+            background-color: #6a4c93 !important;
+            color: white;
+        }
+        .venomous-card {
+            background-color: #f0e6ff;
+            border-left: 4px solid #6a4c93;
+        }
+        .aggressive-card {
+            background-color: #ffe6e6;
+            border-left: 4px solid #dc3545;
         }
     </style>
 </head>
@@ -48,11 +62,16 @@
         <div id="species-list">
             {% if species %}
                 {% for sp in species %}
-                    <div class="card">
+                    <div class="card {% if sp.color == 'purple' %}venomous-card{% elif sp.color == 'red' %}aggressive-card{% endif %}">
                         <div class="card-body">
                             <h5 class="card-title">{{ sp.name }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ sp.scientificName }}</h6>
-                            <p class="card-text">{{ sp.danger }}</p>
+                            {% if sp.category == 'venomous' %}
+                                <span class="badge bg-purple" style="background-color: #6a4c93;">Venomous/Poisonous</span>
+                            {% elif sp.category == 'aggressive' %}
+                                <span class="badge bg-danger">Aggressive</span>
+                            {% endif %}
+                            <p class="card-text mt-2">{{ sp.danger }}</p>
                         </div>
                     </div>
                 {% endfor %}

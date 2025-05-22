@@ -164,25 +164,35 @@
     }
 
     function displaySpeciesOnMap(species, userLat, userLng) {
+      // Clear existing markers except user marker
       map.eachLayer(layer => {
         if (layer instanceof L.Marker && layer !== userMarker) {
           map.removeLayer(layer);
         }
       });
       
+      // Add markers for each species
       species.forEach(sp => {
         if (sp.lat && sp.lng) {
+          let markerColor = '🐾'; // Default
+          if (sp.category === 'venomous') {
+            markerColor = '💜'; // Purple heart for venomous
+          } else if (sp.category === 'aggressive') {
+            markerColor = '❤️'; // Red heart for aggressive
+          }
+          
           const marker = L.marker([sp.lat, sp.lng], {
             icon: L.divIcon({
               className: 'species-marker',
-              html: '🐾',
+              html: markerColor,
               iconSize: [20, 20]
             })
           }).addTo(map);
           
           marker.bindPopup(`
-            <strong>${sp.name || 'No common name'}</strong><br>
-            <em>${sp.scientificName}</em>
+            <strong>${sp.name}</strong><br>
+            <em>${sp.scientificName}</em><br>
+            ${sp.danger}
           `);
         }
       });

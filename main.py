@@ -198,7 +198,9 @@ def get_species_json():
                 "scientificName": species["scientific_name"],
                 "lat": species["lat"],
                 "lng": species["lng"],
-                "danger": species["danger"]
+                "danger": species["danger"],
+                "category": species.get("category", "unknown"),
+                "color": species.get("color", "gray")
             })
         
         return jsonify(species_data)
@@ -227,7 +229,9 @@ def view_species_page():
                 "scientificName": species["scientific_name"],
                 "lat": species["lat"],
                 "lng": species["lng"],
-                "danger": species["danger"]
+                "danger": species["danger"],
+                "category": species.get("category", "unknown"),
+                "color": species.get("color", "gray")
             })
         
         return render_template("species.html", species=species_data)
