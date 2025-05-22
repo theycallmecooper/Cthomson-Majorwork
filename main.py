@@ -12,13 +12,13 @@ CORS(app)
 
 def analyze_species_danger(species_list):
     """
-    Use OpenAI's API to analyze the danger level of species
+    Use OpenAI's API to analyze danger levels, categorize species and provide missing common names
     
     Args:
         species_list (list): List of species dictionaries
     
     Returns:
-        list: Updated list with danger assessments
+        list: Updated list with danger assessments and categorization
     """
     try:
         # Only send necessary data to OpenAI to reduce token usage
@@ -32,23 +32,56 @@ def analyze_species_danger(species_list):
         response = openai_client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant specialized in Australian wildlife."},
-                {"role": "user", "content": f"I will provide you with a list of species. Please assess each species and determine if it's dangerous to humans on a scale of 1-10, where 10 is extremely dangerous. For each species, provide: common name, scientific name, danger rating, and a brief explanation of any hazards. Only list species with a danger rating of 3 or higher. Here's the list: {simplified_species}"}
+                {"role": "system", "content": "You are a helpful assistant specialized in Australian wildlife taxonomy and risk assessment."},
+                {"role": "user", "content": f"""I will provide you with a list of species. For each species, please provide the following information in a structured format:
+                1. Scientific name (as provided)
+                2. Common name (if "No common name" is listed, please suggest an appropriate common name)
+                3. Danger type: categorize as "VENOMOUS/POISONOUS", "AGGRESSIVE", or "HARMLESS"
+                4. Danger rating: On a scale of 1-10, where 10 is extremely dangerous
+                5. Brief explanation of any hazards (max 15 words)
+                
+                Only respond with entries that have a danger rating of 3 or higher.
+                Format your response as:
+                Scientific name | Common name | DANGER_TYPE | Rating: X/10 | Brief explanation
+                
+                Here's the list: {simplified_species}"""}
             ],
-            max_tokens=500,
-            temperature=0.7
+            max_tokens=800,
+            temperature=0.5
         )
         
         # Extract danger information from OpenAI's response
         danger_info = response.choices[0].message.content.strip()
         
-        # We'll update our species list with danger ratings where possible
-        # This is a simplified approach; in a production app you would parse the response more carefully
+        # We'll update our species list with danger ratings and categories
         for species in species_list:
+            # Check if this species is in the danger info
             if species["scientific_name"] in danger_info:
-                species_info = danger_info.split(species["scientific_name"])[1].split("\n")[0]
-                if "dangerous" in species_info.lower() or "venomous" in species_info.lower() or "toxic" in species_info.lower():
-                    species["danger"] = species_info.strip()
+                # Find the line containing this species
+                for line in danger_info.split('\n'):
+                    if species["scientific_name"] in line:
+                        parts = line.split('|')
+                        if len(parts) >= 5:
+                            # Check if we need to update the common name
+                            if species["common_name"] == "No common name" and len(parts) > 1:
+                                species["common_name"] = parts[1].strip()
+                            
+                            # Determine danger category
+                            danger_type = parts[2].strip().upper() if len(parts) > 2 else ""
+                            if "VENOMOUS" in danger_type or "POISONOUS" in danger_type:
+                                species["category"] = "venomous"
+                                species["color"] = "purple"
+                            elif "AGGRESSIVE" in danger_type:
+                                species["category"] = "aggressive"
+                                species["color"] = "red"
+                            else:
+                                species["category"] = "harmless"
+                                species["color"] = "orange" # Default for any other dangerous species
+                            
+                            # Set the danger description
+                            danger_rating = parts[3].strip() if len(parts) > 3 else ""
+                            danger_explanation = parts[4].strip() if len(parts) > 4 else ""
+                            species["danger"] = f"{danger_rating}. {danger_explanation}"
         
         return species_list
     except Exception as e:
