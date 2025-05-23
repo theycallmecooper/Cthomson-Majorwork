@@ -146,7 +146,8 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
                 "common_name": record.get("vernacularName", "No common name"),
                 "lat": record.get("decimalLatitude"),
                 "lng": record.get("decimalLongitude"),
-                "danger": "Not flagged as dangerous"  # Default value
+                "danger": "Not flagged as dangerous",
+                "source": "ALA"  # Mark source for deduplication
             }
             
             # Add to our species list if not already present
@@ -164,6 +165,89 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
         print(f"Error searching for species: {e}")
         return {"species": [], "total_records": 0}
 
+def search_inaturalist_species(latitude, longitude, radius=5000, max_results=20):
+    """
+    Search for species near a location using the iNaturalist API, focused on NSW
+    """
+    # Define the API endpoint
+    url = "https://api.inaturalist.org/v1/observations"
+    
+    # Convert radius to kilometers
+    radius_km = radius / 1000
+    
+    # Define the query parameters - NSW has place_id 8170 in iNaturalist
+    params = {
+        "lat": latitude,
+        "lng": longitude,
+        "radius": radius_km,
+        "per_page": max_results,
+        "order_by": "observed_on",
+        "place_id": 8170,  # ID for NSW, Australia
+        "quality_grade": "research",  # More reliable observations
+        "verifiable": "true"
+    }
+    
+    try:
+        # Make the API request
+        response = requests.get(url, params=params)
+        
+        # Check if request was successful
+        if not response.ok:
+            print(f"iNaturalist API Error {response.status_code}: {response.text[:200]}...")
+            return []
+            
+        # Parse the JSON response
+        data = response.json()
+        
+        # Extract species information 
+        species_list = []
+        for result in data.get("results", []):
+            if not result.get("taxon"):
+                continue
+                
+            taxon = result["taxon"]
+            species_info = {
+                "scientific_name": taxon.get("name", "Unknown species"),
+                "common_name": taxon.get("preferred_common_name", "No common name"),
+                "lat": result.get("latitude"),
+                "lng": result.get("longitude"),
+                "danger": "Not flagged as dangerous",
+                "source": "iNaturalist"  # Mark source for deduplication
+            }
+            
+            # Add to species list
+            species_list.append(species_info)
+            
+        return species_list
+        
+    except Exception as e:
+        print(f"Error searching iNaturalist: {e}")
+        return []
+
+def combine_and_deduplicate_species(ala_species, inaturalist_species):
+    """
+    Combine species lists from multiple sources and remove duplicates
+    """
+    # Combine the lists
+    combined_species = ala_species + inaturalist_species
+    
+    # Use a dictionary to track unique species by scientific name
+    unique_species = {}
+    
+    for species in combined_species:
+        # Create a normalized key for comparison
+        sci_name = species["scientific_name"].lower()
+        
+        # Keep track of unique species, prioritizing ALA data when available
+        if sci_name not in unique_species:
+            unique_species[sci_name] = species
+        elif species["source"] == "ALA" and unique_species[sci_name]["source"] == "iNaturalist":
+            # Prefer ALA records over iNaturalist for the same species
+            unique_species[sci_name] = species
+    
+    # Convert back to list
+    return list(unique_species.values())
+
 @app.route("/")
 def index():
     return render_template("home.html")
@@ -180,19 +264,31 @@ def toxicology():
 def get_species_json():
     lat = request.args.get("lat", type=float)
     lng = request.args.get("lng", type=float)
-    radius = request.args.get("radius", default=20000, type=int)  # Default 20km in meters
+    radius = request.args.get("radius", default=20000, type=int)
     max_results = request.args.get("max", default=50, type=int)
-    kingdom = request.args.get("kingdom", default="Animalia")  # Default to animals
+    kingdom = request.args.get("kingdom", default="Animalia")
 
     if lat is None or lng is None:
         return jsonify({"error": "Missing lat/lng parameters"}), 400
 
     try:
-        result = search_ala_species(lat, lng, radius, max_results, kingdom)
+        # Get data from ALA
+        ala_result = search_ala_species(lat, lng, radius, max_results, kingdom)
+        ala_species = ala_result["species"]
         
-        # Transform the data to match the expected format in your frontend
+        # Get data from iNaturalist (NSW-focused)
+        inaturalist_species = search_inaturalist_species(lat, lng, radius, max_results)
+        
+        # Combine and deduplicate species lists
+        combined_species = combine_and_deduplicate_species(ala_species, inaturalist_species)
+        
+        # Analyze danger levels for all species
+        if combined_species:
+            combined_species = analyze_species_danger(combined_species)
+        
+        # Transform data for frontend
         species_data = []
-        for species in result["species"]:
+        for species in combined_species:
             species_data.append({
                 "name": species["common_name"],
                 "scientificName": species["scientific_name"],
@@ -200,7 +296,8 @@ def get_species_json():
                 "lng": species["lng"],
                 "danger": species["danger"],
                 "category": species.get("category", "unknown"),
-                "color": species.get("color", "gray")
+                "color": species.get("color", "gray"),
+                "source": species.get("source", "unknown")
             })
         
         return jsonify(species_data)
@@ -219,11 +316,23 @@ def view_species_page():
         return render_template("species.html", species=[])
 
     try:
-        result = search_ala_species(lat, lng, radius, max_results, kingdom)
+        # Get data from ALA
+        ala_result = search_ala_species(lat, lng, radius, max_results, kingdom)
+        ala_species = ala_result["species"]
         
-        # Transform the data to match the expected format in your template
+        # Get data from iNaturalist
+        inaturalist_species = search_inaturalist_species(lat, lng, radius, max_results)
+        
+        # Combine and deduplicate
+        combined_species = combine_and_deduplicate_species(ala_species, inaturalist_species)
+        
+        # Analyze danger
+        if combined_species:
+            combined_species = analyze_species_danger(combined_species)
+        
+        # Transform data for template
         species_data = []
-        for species in result["species"]:
+        for species in combined_species:
             species_data.append({
                 "name": species["common_name"],
                 "scientificName": species["scientific_name"],
@@ -231,7 +340,8 @@ def view_species_page():
                 "lng": species["lng"],
                 "danger": species["danger"],
                 "category": species.get("category", "unknown"),
-                "color": species.get("color", "gray")
+                "color": species.get("color", "gray"),
+                "source": species.get("source", "unknown")
             })
         
         return render_template("species.html", species=species_data)
