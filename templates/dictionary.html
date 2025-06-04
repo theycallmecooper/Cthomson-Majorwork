@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Dictionary</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff; /* AliceBlue */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        .header {
+            background-color: #0066cc;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            background-color: #004d99;
+        }
+        .navbar-brand {
+            color: white !important;
+        }
+        .term-card {
+            background-color: #fff;
+            border-left: 4px solid #0066cc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .term-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .term-card .card-header {
+            background-color: #e6f2ff;
+            font-weight: bold;
+            color: #0066cc;
+            border-bottom: 1px solid #cce6ff;
+        }
+        h2, h3, h4 {
+            color: #0066cc;
+        }
+        .search-area {
+            background-color: #e6f2ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .btn-primary {
+            background-color: #0066cc;
+            border-color: #0066cc;
+        }
+        .btn-primary:hover {
+            background-color: #004d99;
+            border-color: #004d99;
+        }
+        .term-category {
+            background-color: #e6f2ff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .sidebar {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar ul {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .sidebar li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e6f2ff;
+        }
+        .sidebar a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            color: #004d99;
+            font-weight: bold;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0066cc;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .back-to-top:hover {
+            opacity: 1;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Australian Wildlife Safety</a>
+            <ul class="navbar-nav d-flex flex-row">
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="/species-finder">Species Finder</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="/toxicology">Toxicology</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="header">
+        <div class="container">
+            <h1>Scientific Term Dictionary</h1>
+            <p class="lead">Definitions of toxicology and wildlife-related terminology</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <!-- Main Content Area -->
+            <div class="col-md-8">
+                <div class="search-area">
+                    <h4>Search Terms</h4>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search for a term...">
+                        <button class="btn btn-primary" type="button" id="searchButton">Search</button>
+                    </div>
+                </div>
+
+                <h2 id="toxin-types">Toxin Types</h2>
+                <div class="term-category">
+                    <p>Learn about different types of toxins found in Australian wildlife.</p>
+                </div>
+
+                <div class="term-card" id="neurotoxins">
+                    <div class="card-header">Neurotoxins</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> Toxins that damage or disrupt the functioning of nerve tissue.</p>
+                        <p><strong>Effects:</strong> Can cause paralysis, seizures, altered nerve function, and disrupted communication between nerves and muscles.</p>
+                        <p><strong>Examples:</strong> Found in many Australian elapid snakes (e.g., Eastern Brown Snake), funnel-web spiders, blue-ringed octopus (tetrodotoxin).</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="hemotoxins">
+                    <div class="card-header">Hemotoxins (Haemotoxins)</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> Toxins that destroy red blood cells, disrupt blood clotting, and cause tissue damage.</p>
+                        <p><strong>Effects:</strong> Can cause internal bleeding, organ damage, and disruption of the circulatory system.</p>
+                        <p><strong>Examples:</strong> Found in some Australian snake venoms, particularly Tiger Snakes and Brown Snakes.</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="cytotoxins">
+                    <div class="card-header">Cytotoxins</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> Toxins that cause cell death and tissue destruction.</p>
+                        <p><strong>Effects:</strong> Can cause necrosis, tissue damage, and localized cell destruction.</p>
+                        <p><strong>Examples:</strong> Found in jellyfish stings, some spider venom, and certain snake species.</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="myotoxins">
+                    <div class="card-header">Myotoxins</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> Toxins that specifically damage muscle tissue.</p>
+                        <p><strong>Effects:</strong> Can cause muscle pain, weakness, damage, and in severe cases, rhabdomyolysis (breakdown of skeletal muscle).</p>
+                        <p><strong>Examples:</strong> Found in the venom of Tiger Snakes and some other Australian elapids.</p>
+                    </div>
+                </div>
+
+                <h2 id="medical-terms" class="mt-5">Medical Terms</h2>
+                <div class="term-category">
+                    <p>Key medical terminology related to venom and toxin effects.</p>
+                </div>
+
+                <div class="term-card" id="coagulopathy">
+                    <div class="card-header">Coagulopathy</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> A condition in which the blood's ability to clot is impaired.</p>
+                        <p><strong>Effects:</strong> Can lead to excessive bleeding, internal hemorrhaging, and complications from blood loss.</p>
+                        <p><strong>Related to:</strong> Many Australian snake venoms, including those from Brown Snakes and Tiger Snakes.</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="coagulate">
+                    <div class="card-header">Coagulate</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> The process by which blood changes from a liquid to a gel or solid state, forming a clot.</p>
+                        <p><strong>Function:</strong> Normal coagulation stops excessive bleeding when a blood vessel is injured.</p>
+                        <p><strong>Impact of venoms:</strong> Some venoms can prevent coagulation (anticoagulants), while others can cause abnormal clotting (procoagulants).</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="envenomation">
+                    <div class="card-header">Envenomation</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> The process by which venom is injected into a person or animal by bite, sting, or other means.</p>
+                        <p><strong>Effects:</strong> Varies widely depending on the type of venom, amount injected, and location of injection.</p>
+                        <p><strong>Treatment:</strong> Depends on the type of envenomation but may include antivenom, pressure immobilization, and supportive care.</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="necrosis">
+                    <div class="card-header">Necrosis</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> The death of body tissue due to lack of blood flow or serious injury, including from toxins.</p>
+                        <p><strong>Effects:</strong> Tissue turns black and dies, may require surgical removal in severe cases.</p>
+                        <p><strong>Related to:</strong> Certain spider bites (e.g., white-tailed spider, though this is contested), some snake bites, and marine creature injuries.</p>
+                    </div>
+                </div>
+
+                <h2 id="treatment-terms" class="mt-5">Treatment Terminology</h2>
+                <div class="term-category">
+                    <p>Terms related to treating envenomation and toxin exposure.</p>
+                </div>
+
+                <div class="term-card" id="antivenom">
+                    <div class="card-header">Antivenom</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> A biological product used to treat venomous bites and stings, containing antibodies against specific venoms.</p>
+                        <p><strong>Function:</strong> Binds to and neutralizes venom components in the victim's body.</p>
+                        <p><strong>Types in Australia:</strong> Specific antivenoms exist for snakes (brown, tiger, black, taipan, death adder), funnel-web spiders, redback spiders, box jellyfish, and other species.</p>
+                    </div>
+                </div>
+
+                <div class="term-card" id="pressure-immobilization">
+                    <div class="card-header">Pressure Immobilization Technique</div>
+                    <div class="card-body">
+                        <p><strong>Definition:</strong> A first aid technique used for venomous bites and stings to slow the movement of venom through the body.</p>
+                        <p><strong>Method:</strong> A firm bandage is applied over the bite site and along the affected limb, which is then immobilized with a splint.</p>
+                        <p><strong>Uses:</strong> Recommended for bites from most Australian venomous snakes, funnel-web spiders, and blue-ringed octopuses.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="sidebar">
+                    <h4>Quick Navigation</h4>
+                    <ul>
+                        <li><a href="#toxin-types">Toxin Types</a>
+                            <ul>
+                                <li><a href="#neurotoxins">Neurotoxins</a></li>
+                                <li><a href="#hemotoxins">Hemotoxins</a></li>
+                                <li><a href="#cytotoxins">Cytotoxins</a></li>
+                                <li><a href="#myotoxins">Myotoxins</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#medical-terms">Medical Terms</a>
+                            <ul>
+                                <li><a href="#coagulopathy">Coagulopathy</a></li>
+                                <li><a href="#coagulate">Coagulate</a></li>
+                                <li><a href="#envenomation">Envenomation</a></li>
+                                <li><a href="#necrosis">Necrosis</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#treatment-terms">Treatment Terms</a>
+                            <ul>
+                                <li><a href="#antivenom">Antivenom</a></li>
+                                <li><a href="#pressure-immobilization">Pressure Immobilization</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        Related Resources
+                    </div>
+                    <div class="card-body">
+                        <p>To learn more about Australian wildlife safety:</p>
+                        <ul>
+                            <li><a href="/toxicology">Toxicology Handbook</a></li>
+                            <li><a href="/species-finder">Species Finder</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4 mb-5">
+        <a href="/" class="btn btn-secondary">← Back to Home</a>
+    </div>
+
+    <a href="#" class="back-to-top text-decoration-none">↑</a>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            searchDictionary(searchTerm);
+        });
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                searchDictionary(searchTerm);
+            }
+        });
+        
+        function searchDictionary(term) {
+            const termCards = document.querySelectorAll('.term-card');
+            let found = false;
+            
+            termCards.forEach(card => {
+                const cardContent = card.innerText.toLowerCase();
+                const header = card.querySelector('.card-header').innerText.toLowerCase();
+                
+                if (header.includes(term) || cardContent.includes(term)) {
+                    card.scrollIntoView({behavior: 'smooth'});
+                    card.style.animation = 'highlight 2s';
+                    found = true;
+                    return; // Exit after finding the first match
+                }
+            });
+            
+            if (!found) {
+                alert('Term not found. Try another search term.');
+            }
+        }
+        
+        // Style for highlighting animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes highlight {
+                0% { background-color: #ffff99; }
+                100% { background-color: white; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Smooth scrolling for sidebar links
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                targetElement.scrollIntoView({behavior: 'smooth'});
+            });
+        });
+        
+        // Back to top functionality
+        document.querySelector('.back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    </script>
+</body>
+</html>

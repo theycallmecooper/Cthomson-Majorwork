@@ -5,10 +5,41 @@ from flask_cors import CORS
 from openai import OpenAI
 
 # Initialize OpenAI client
-openai_client = OpenAI(api_key="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")
+openai_client = OpenAI(api_key="")
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
+
+class Species:
+    """Class representing a wildlife species with its properties"""
+    def __init__(self, scientific_name, common_name, lat=None, lng=None, source=None):
+        self.scientific_name = scientific_name
+        self.common_name = common_name or "No common name"
+        self.lat = lat
+        self.lng = lng
+        self.danger = "Not flagged as dangerous"
+        self.category = "unknown"
+        self.color = "gray"
+        self.source = source
+    
+    def to_dict(self):
+        """Convert to dictionary for JSON serialization"""
+        return {
+            "name": self.common_name,
+            "scientificName": self.scientific_name,
+            "lat": self.lat,
+            "lng": self.lng,
+            "danger": self.danger,
+            "category": self.category,
+            "color": self.color,
+            "source": self.source
+        }
+        
+    def __eq__(self, other):
+        """Allow comparison between species objects"""
+        if not isinstance(other, Species):
+            return False
+        return self.scientific_name.lower() == other.scientific_name.lower()
 
 def analyze_species_danger(species_list):
     """
@@ -224,7 +255,7 @@ def search_inaturalist_species(latitude, longitude, radius=5000, max_results=20)
         print(f"Error searching iNaturalist: {e}")
         return []
 
-def combine_and_deduplicate_species(ala_species, inaturalist_species):
+def combine_duplicate_species(ala_species, inaturalist_species):
     """
     Combine species lists from multiple sources and remove duplicates
     """
@@ -280,7 +311,7 @@ def get_species_json():
         inaturalist_species = search_inaturalist_species(lat, lng, radius, max_results)
         
         # Combine and deduplicate species lists
-        combined_species = combine_and_deduplicate_species(ala_species, inaturalist_species)
+        combined_species = combine_duplicate_species(ala_species, inaturalist_species)
         
         # Analyze danger levels for all species
         if combined_species:
@@ -324,7 +355,7 @@ def view_species_page():
         inaturalist_species = search_inaturalist_species(lat, lng, radius, max_results)
         
         # Combine and deduplicate
-        combined_species = combine_and_deduplicate_species(ala_species, inaturalist_species)
+        combined_species = combine_duplicate_species(ala_species, inaturalist_species)
         
         # Analyze danger
         if combined_species:
@@ -347,6 +378,10 @@ def view_species_page():
         return render_template("species.html", species=species_data)
     except Exception as e:
         return render_template("species.html", species=[], error=str(e))
+
+@app.route("/dictionary")
+def dictionary():
+    return render_template("dictionary.html")
 
 # Testing function - can be used for debugging
 def test_location(name, latitude, longitude, radius=10000):
