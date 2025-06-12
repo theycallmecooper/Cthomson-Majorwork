@@ -1,5 +1,7 @@
 import requests
 import time
+import json
+import os
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from openai import OpenAI
@@ -40,6 +42,58 @@ class Species:
         if not isinstance(other, Species):
             return False
         return self.scientific_name.lower() == other.scientific_name.lower()
+
+# Load the common name lookup table
+def load_common_name_lookup():
+    """Load the common name lookup JSON file"""
+    try:
+        file_path = os.path.join(os.path.dirname(__file__), 'common_name_lookup.json')
+        with open(file_path, 'r') as file:
+            return json.load(file)
+    except Exception as e:
+        print(f"Error loading common name lookup: {e}")
+        return {"taxonomic_common_names": {}}
+
+# Global variable to store the lookup table
+common_name_lookup = load_common_name_lookup()
+
+def get_common_name_from_taxonomy(scientific_name, taxonomy=None):
+    """
+    Try to find a common name based on taxonomic information
+    
+    Args:
+        scientific_name (str): Scientific name of the species
+        taxonomy (dict): Dictionary with class, order, family, genus keys (if available)
+        
+    Returns:
+        str: Common name if found, otherwise None
+    """
+    if not scientific_name:
+        return None
+    
+    lookup_data = common_name_lookup.get("taxonomic_common_names", {})
+    
+    # First check for a direct species match (most specific)
+    species_lookup = lookup_data.get("species", {})
+    if scientific_name in species_lookup:
+        return species_lookup[scientific_name]
+    
+    # If we have taxonomy information from API
+    if taxonomy:
+        taxonomic_levels = ["genus", "family", "order", "class"]
+        
+        for level in taxonomic_levels:
+            if taxonomy.get(level) and taxonomy.get(level) in lookup_data.get(level, {}):
+                return lookup_data[level][taxonomy[level]]
+    
+    # If we don't have taxonomy info, try to extract genus from scientific name
+    parts = scientific_name.split()
+    if len(parts) > 0:
+        genus = parts[0]
+        if genus in lookup_data.get("genus", {}):
+            return lookup_data["genus"][genus]
+    
+    return None
 
 def analyze_species_danger(species_list):
     """
@@ -172,9 +226,29 @@ def search_ala_species(latitude, longitude, radius=5000, max_results=20, kingdom
         # Extract species information from the response
         species_list = []
         for record in data.get("occurrences", []):
+            # Prepare taxonomy data if available
+            taxonomy = {
+                "class": record.get("class"),
+                "order": record.get("order"),
+                "family": record.get("family"),
+                "genus": record.get("genus")
+            }
+            
+            # Get scientific name
+            scientific_name = record.get("scientificName", "Unknown species")
+            
+            # Get common name, use lookup if not available
+            common_name = record.get("vernacularName")
+            if not common_name:
+                common_name = get_common_name_from_taxonomy(scientific_name, taxonomy)
+            
+            # Fallback to "No common name" if still not found
+            if not common_name:
+                common_name = "No common name"
+            
             species_info = {
-                "scientific_name": record.get("scientificName", "Unknown species"),
-                "common_name": record.get("vernacularName", "No common name"),
+                "scientific_name": scientific_name,
+                "common_name": common_name,
                 "lat": record.get("decimalLatitude"),
                 "lng": record.get("decimalLongitude"),
                 "danger": "Not flagged as dangerous",
@@ -237,9 +311,30 @@ def search_inaturalist_species(latitude, longitude, radius=5000, max_results=20)
                 continue
                 
             taxon = result["taxon"]
+            scientific_name = taxon.get("name", "Unknown species")
+            
+            # Get common name, use lookup if not available
+            common_name = taxon.get("preferred_common_name")
+            
+            # Extract taxonomy if available
+            taxonomy = {
+                "class": taxon.get("ancestor_ids", {}).get("class"),
+                "order": taxon.get("ancestor_ids", {}).get("order"),
+                "family": taxon.get("ancestor_ids", {}).get("family"),
+                "genus": taxon.get("ancestor_ids", {}).get("genus")
+            }
+            
+            # Use lookup if no common name
+            if not common_name:
+                common_name = get_common_name_from_taxonomy(scientific_name, taxonomy)
+            
+            # Fallback if still not found
+            if not common_name:
+                common_name = "No common name"
+            
             species_info = {
-                "scientific_name": taxon.get("name", "Unknown species"),
-                "common_name": taxon.get("preferred_common_name", "No common name"),
+                "scientific_name": scientific_name,
+                "common_name": common_name,
                 "lat": result.get("latitude"),
                 "lng": result.get("longitude"),
                 "danger": "Not flagged as dangerous",
@@ -382,6 +477,68 @@ def view_species_page():
 @app.route("/dictionary")
 def dictionary():
     return render_template("dictionary.html")
+
+def add_to_common_name_lookup(level, key, value):
+    """
+    Add a new entry to the common name lookup file
+    
+    Args:
+        level (str): Taxonomic level ('class', 'order', 'family', 'genus', 'species')
+        key (str): The taxonomic name to map
+        value (str): The common name to use
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Load current data
+        lookup_data = load_common_name_lookup()
+        
+        # Add the new entry
+        if level in lookup_data.get("taxonomic_common_names", {}):
+            lookup_data["taxonomic_common_names"][level][key] = value
+        else:
+            if "taxonomic_common_names" not in lookup_data:
+                lookup_data["taxonomic_common_names"] = {}
+            lookup_data["taxonomic_common_names"][level] = {key: value}
+        
+        # Save the updated data
+        file_path = os.path.join(os.path.dirname(__file__), 'common_name_lookup.json')
+        with open(file_path, 'w') as file:
+            json.dump(lookup_data, file, indent=2)
+        
+        # Reload the lookup table
+        global common_name_lookup
+        common_name_lookup = lookup_data
+        
+        return True
+    except Exception as e:
+        print(f"Error updating common name lookup: {e}")
+        return False
+
+@app.route("/admin/names", methods=["GET", "POST"])
+def manage_common_names():
+    message = ""
+    
+    if request.method == "POST":
+        level = request.form.get("level")
+        key = request.form.get("key")
+        value = request.form.get("value")
+        
+        if level and key and value:
+            if add_to_common_name_lookup(level, key, value):
+                message = f"Successfully added {value} as common name for {key}"
+            else:
+                message = "Error adding common name"
+    
+    # Load current data for display
+    lookup_data = load_common_name_lookup().get("taxonomic_common_names", {})
+    
+    return render_template(
+        "manage_names.html", 
+        lookup_data=lookup_data, 
+        message=message
+    )
 
 # Testing function - can be used for debugging
 def test_location(name, latitude, longitude, radius=10000):
