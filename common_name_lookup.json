@@ -40,7 +40,11 @@
       "Lycosidae": "Wolf Spider",
       "Macropodidae": "Kangaroo or Wallaby",
       "Phalangeridae": "Possum",
-      "Colubridae": "Common Snake"
+      "Colubridae": "Common Snake",
+      "Acanthochitoniidae": "Chiton (Marine Mollusk)",
+      "Carcharhinidae": "Requiem Shark",
+      "Acanthosomatidae": "Shield Bug (a.k.a Stink Bug)",
+      "Crocodylidae": "Crocodile"
     },
     "genus": {
       "Pseudonaja": "Brown Snake",
