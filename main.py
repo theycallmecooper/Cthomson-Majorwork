@@ -478,68 +478,6 @@ def view_species_page():
 def dictionary():
     return render_template("dictionary.html")
 
-def add_to_common_name_lookup(level, key, value):
-    """
-    Add a new entry to the common name lookup file
-    
-    Args:
-        level (str): Taxonomic level ('class', 'order', 'family', 'genus', 'species')
-        key (str): The taxonomic name to map
-        value (str): The common name to use
-        
-    Returns:
-        bool: True if successful, False otherwise
-    """
-    try:
-        # Load current data
-        lookup_data = load_common_name_lookup()
-        
-        # Add the new entry
-        if level in lookup_data.get("taxonomic_common_names", {}):
-            lookup_data["taxonomic_common_names"][level][key] = value
-        else:
-            if "taxonomic_common_names" not in lookup_data:
-                lookup_data["taxonomic_common_names"] = {}
-            lookup_data["taxonomic_common_names"][level] = {key: value}
-        
-        # Save the updated data
-        file_path = os.path.join(os.path.dirname(__file__), 'common_name_lookup.json')
-        with open(file_path, 'w') as file:
-            json.dump(lookup_data, file, indent=2)
-        
-        # Reload the lookup table
-        global common_name_lookup
-        common_name_lookup = lookup_data
-        
-        return True
-    except Exception as e:
-        print(f"Error updating common name lookup: {e}")
-        return False
-
-@app.route("/admin/names", methods=["GET", "POST"])
-def manage_common_names():
-    message = ""
-    
-    if request.method == "POST":
-        level = request.form.get("level")
-        key = request.form.get("key")
-        value = request.form.get("value")
-        
-        if level and key and value:
-            if add_to_common_name_lookup(level, key, value):
-                message = f"Successfully added {value} as common name for {key}"
-            else:
-                message = "Error adding common name"
-    
-    # Load current data for display
-    lookup_data = load_common_name_lookup().get("taxonomic_common_names", {})
-    
-    return render_template(
-        "manage_names.html", 
-        lookup_data=lookup_data, 
-        message=message
-    )
-
 # Testing function - can be used for debugging
 def test_location(name, latitude, longitude, radius=10000):
     """Run a test search for a specific location and print the results"""

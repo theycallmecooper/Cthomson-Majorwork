@@ -184,7 +184,7 @@
           if (sp.category === 'venomous') {
             markerColor = '💜'; // Purple heart for venomous
           } else if (sp.category === 'aggressive') {
-            markerColor = '❤️'; // Red heart for aggressive
+            markerColor = '😡'; // Red heart for aggressive
           }
           
           const marker = L.marker([sp.lat, sp.lng], {
@@ -226,15 +226,23 @@
 
     function showRandomFact() {
       const facts = [
-        "🦘 Kangaroos can't walk backwards!",
+        "🦘 Kangaroos & Emus can't walk backwards!",
         "🐍 Australia is home to 20 of the world’s 25 most venomous snakes.",
         "🕷️ The funnel-web spider’s venom can kill a human — but antivenom exists!",
         "🦎 The frill-necked lizard opens its frill to scare predators.",
         "🐊 Crocodiles can live over 70 years in the wild!",
-        "🦘 Koalas sleep up to 20 hours a day.",
-        "🐚 The cone snail is beautiful but venomous — and deadly!",
-        "🐠 Box jellyfish stings can cause cardiac arrest in minutes.",
-        "🐦 The cassowary is one of the world's most dangerous birds!"
+        "🐨 Koalas sleep up to 20 hours a day.",
+        "🐚 The cone snail has enough venom to kill up to 700 people!",
+        "🐟 Box jellyfish stings can cause cardiac arrest in minutes.",
+        "🐦 The Cassowary can jump up to 7 feet and reach speeds of 50km/h!",
+        "🦅 The wedge-tailed eagle is the largest bird of prey in Australia.",
+        "🐍 The inland taipan is the most venomous snake in the world, with venom 50 times more toxic than that of the king cobra.",
+        "🦘 Red kangaroos can leap over 3 meters high and travel up to 8 meters in a single bound.",
+        "🐨 Koalas have fingerprints that are almost indistinguishable from human fingerprints, even under a microscope.",
+        "🦎 The thorny devil lizard can drink water through its skin.",
+        "🐊 Saltwater crocodiles are the largest living reptile.",
+        "🦅 The Cassowary is Australia's largest bird.",
+        "🐍 The eastern brown snake is responsible for more deaths in Australia than any other snake."
       ];
       const random = facts[Math.floor(Math.random() * facts.length)];
       document.getElementById("factBox").innerText = random;

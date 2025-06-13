@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Australian Wildlife Safety</title>
+    <title>BushBuddy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -69,20 +69,21 @@
 <body>
     <nav class="navbar navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Australian Wildlife Safety</a>
+            <a class="navbar-brand" href="#">BushBuddy</a>
         </div>
     </nav>
 
     <header class="header">
         <div class="container">
-            <h1 class="display-4">Australian Wildlife Safety</h1>
+            <h1 class="display-4">BushBuddy</h1>
             <p class="lead">Identify dangerous species and access toxicology information</p>
         </div>
     </header>
 
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row mb-4">
+            <!-- Species Finder Card - Full Width -->
+            <div class="col-md-12">
                 <div class="card button-card species-card">
                     <div class="card-header">
                         <h4>Species Finder</h4>
@@ -96,6 +97,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <div class="row">
+            <!-- Toxicology Handbook Card - Left Half -->
             <div class="col-md-6">
                 <div class="card button-card toxicology-card">
                     <div class="card-header">
@@ -110,7 +115,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            
+            <!-- Dictionary Card - Right Half -->
+            <div class="col-md-6">
                 <div class="card button-card" style="background-color: #e6f2ff; border-left: 5px solid #0066cc;">
                     <div class="card-header" style="background-color: #0066cc; color: white;">
                         <h4>Scientific Dictionary</h4>
@@ -129,9 +136,9 @@
         <div class="row mt-4">
             <div class="col-md-12">
                 <div class="alert alert-info" role="alert">
-                    <h4>Welcome to Australian Wildlife Safety</h4>
-                    <p>This application helps you identify potentially dangerous Australian wildlife in your area and provides 
-                    toxicology information to assist in emergency situations. Please note that this is an educational tool and 
+                    <h4>Welcome to BushBuddy</h4>
+                    <p>This application helps you identify potentially dangerous Australian wildlife in your area and provides
+                        information to assist in emergency situations. Please note that this is an educational tool and 
                     should not replace professional medical advice.</p>
                 </div>
             </div>
@@ -140,8 +147,8 @@
 
     <footer class="footer">
         <div class="container">
-            <p>© 2025 Australian Wildlife Safety App</p>
-            <p><small>For educational purposes only. Always seek medical attention in case of wildlife incidents.</small></p>
+            <p>© 2025 BushBuddy App</p>
+            <p><small>For educational purposes only. Always seek medical attention in case of emergency</small></p>
         </div>
     </footer>
 </body>
