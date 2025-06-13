@@ -2,6 +2,7 @@ import requests
 import time
 import json
 import os
+import random
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from openai import OpenAI
@@ -478,20 +479,201 @@ def view_species_page():
 def dictionary():
     return render_template("dictionary.html")
 
-# Testing function - can be used for debugging
-def test_location(name, latitude, longitude, radius=10000):
-    """Run a test search for a specific location and print the results"""
-    print(f"\n--- Testing: {name} ({latitude}, {longitude}) ---")
+@app.route("/wildlife-spotlight")
+def wildlife_spotlight():
+    """Show a random wildlife species from the API data"""
+    try:
+        # Get a random species from our API-based search
+        species = get_random_species_for_spotlight()
+        
+        if not species:
+            # Fallback if no species found
+            return render_template("spotlight.html", species=None)
+            
+        return render_template("spotlight.html", species=species)
+    except Exception as e:
+        print(f"Error in wildlife spotlight: {e}")
+        return render_template("spotlight.html", species=None)
+
+def get_random_species_for_spotlight():
+    """Get a random Australian species with detailed information for spotlight feature"""
+    # Australian coordinates to search in - major cities and landmarks
+    australia_locations = [
+        {"name": "Sydney", "lat": -33.8688, "lng": 151.2093},
+        {"name": "Melbourne", "lat": -37.8136, "lng": 144.9631},
+        {"name": "Brisbane", "lat": -27.4698, "lng": 153.0251},
+        {"name": "Perth", "lat": -31.9505, "lng": 115.8605},
+        {"name": "Uluru", "lat": -25.3444, "lng": 131.0369},
+        {"name": "Great Barrier Reef", "lat": -18.2871, "lng": 147.6992},
+        {"name": "Kakadu", "lat": -12.6981, "lng": 132.8064},
+        {"name": "Tasmanian Wilderness", "lat": -42.8826, "lng": 146.3358}
+    ]
     
-    result = search_ala_species(latitude, longitude, radius)
+    # Pick a random location
+    location = random.choice(australia_locations)
     
-    if result["total_records"] > 0:
-        print(f"Found {result['total_records']} total records")
-        print(f"Sample of {len(result['species'])} species:")
-        for i, sp in enumerate(result['species'], 1):
-            print(f"{i}. {sp['scientific_name']} - {sp['common_name']} - {sp['danger']}")
+    # Search for species at this location - using a larger radius for more results
+    ala_results = search_ala_species(location["lat"], location["lng"], radius=50000, max_results=50)
+    
+    # Extract species list
+    species_list = ala_results["species"]
+    
+    # Add iNaturalist results
+    inaturalist_species = search_inaturalist_species(location["lat"], location["lng"], radius=50000, max_results=50)
+    
+    # Combine results
+    all_species = combine_duplicate_species(species_list, inaturalist_species)
+    
+    # Filter to only include species with danger info (more interesting for spotlight)
+    interesting_species = [s for s in all_species if s.get("danger") != "Not flagged as dangerous"]
+    
+    # If we don't have any interesting species, use the full list
+    if not interesting_species and all_species:
+        candidates = all_species
     else:
-        print(f"No species found at this location or an error occurred.")
+        candidates = interesting_species
+    
+    # If we still don't have any species, return None
+    if not candidates:
+        return None
+    
+    # Pick a random species
+    selected_species = random.choice(candidates)
+    
+    # Format it for the spotlight template
+    return enhance_species_for_spotlight(selected_species, location["name"])
+
+def enhance_species_for_spotlight(species, location_name):
+    """Add detailed information to a species object for display in the spotlight"""
+    # Get the danger level based on the category
+    danger_level = "low"
+    if species.get("category") == "venomous":
+        danger_level = "high"
+    elif species.get("category") == "aggressive":
+        danger_level = "medium"
+    
+    # Check if venomous based on category or danger info
+    venomous = False
+    if species.get("category") == "venomous" or "venom" in species.get("danger", "").lower():
+        venomous = True
+    
+    # Generate badges based on available info
+    badges = []
+    if "Australia" in species.get("common_name", ""):
+        badges.append("Endemic")
+    
+    # Try to determine if it's a reptile, mammal, etc. from the scientific name or common name
+    animal_types = {
+        "snake": "Reptile", "lizard": "Reptile", "turtle": "Reptile", 
+        "spider": "Arachnid", "scorpion": "Arachnid",
+        "fish": "Fish", "shark": "Fish", "ray": "Fish",
+        "bird": "Bird", "eagle": "Bird", "hawk": "Bird", "parrot": "Bird",
+        "mammal": "Mammal", "kangaroo": "Mammal", "wallaby": "Mammal", "possum": "Mammal",
+        "jellyfish": "Marine", "octopus": "Marine", "crab": "Marine"
+    }
+    
+    common_name_lower = species.get("common_name", "").lower()
+    for key, animal_type in animal_types.items():
+        if key in common_name_lower and animal_type not in badges:
+            badges.append(animal_type)
+            break
+    
+    # Get detailed species information using OpenAI
+    detailed_info = get_detailed_species_info(species, badges, location_name)
+    
+    # Merge our basic info with the detailed info
+    spotlight_species = {
+        "name": species.get("common_name", "Unknown Species"),
+        "scientific_name": species.get("scientific_name", "Unknown"),
+        "danger_level": danger_level,
+        "venomous": venomous,
+        "badges": badges,
+        "description": detailed_info.get("description", f"{species.get('common_name')} is an Australian native species found in various regions of Australia."),
+        "size": detailed_info.get("size", "Variable depending on age and gender"),
+        "habitat": detailed_info.get("habitat", f"Found in the {location_name} region of Australia"),
+        "distribution": detailed_info.get("distribution", "Found in parts of Australia"),
+        "diet": detailed_info.get("diet", "Varies based on available food sources"),
+        "lifespan": detailed_info.get("lifespan", "Varies in wild and captivity"),
+        "danger_info": species.get("danger", "") if danger_level != "low" else "",
+        "fun_facts": detailed_info.get("fun_facts", [
+            f"This specimen was recorded near {location_name}, Australia",
+            f"Scientific classification: {species.get('scientific_name', '')}"
+        ])
+    }
+    
+    return spotlight_species
+
+def get_detailed_species_info(species, badges, location_name):
+    """Use OpenAI to get detailed information about a species"""
+    try:
+        animal_type = "animal"
+        for badge in badges:
+            if badge in ["Reptile", "Arachnid", "Fish", "Bird", "Mammal", "Marine"]:
+                animal_type = badge.lower()
+                break
+        
+        scientific_name = species.get("scientific_name", "")
+        common_name = species.get("common_name", "")
+        
+        # Prepare the prompt for OpenAI
+        prompt = f"""
+        Please provide detailed factual information about {common_name} (Scientific name: {scientific_name}), 
+        an Australian {animal_type}. Format your response as a JSON object with these fields:
+        
+        1. description: A 2-3 sentence description of the species
+        2. size: Specific size information (length, weight, etc.)
+        3. habitat: Detailed habitat preferences
+        4. distribution: Where in Australia it can be found
+        5. diet: What it eats
+        6. lifespan: Typical lifespan in the wild and/or captivity
+        7. fun_facts: An array of 3-4 interesting facts about this species
+        
+        Be accurate, specific, and concise. Include measurements where appropriate.
+        If you don't have specific information for this species, provide plausible information based on related species.
+        Do not include any disclaimers or explanations in your response - only the JSON object.
+        """
+        
+        # Call OpenAI API
+        response = openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant specialized in Australian wildlife biology."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=600,
+            temperature=0.7
+        )
+        
+        # Extract and parse the JSON response
+        content = response.choices[0].message.content.strip()
+        
+        # Sometimes the model might include markdown code blocks or other formatting, so clean it up
+        if "```json" in content:
+            content = content.split("```json")[1].split("```")[0].strip()
+        elif "```" in content:
+            content = content.split("```")[1].strip()
+            
+        detailed_info = json.loads(content)
+        return detailed_info
+        
+    except Exception as e:
+        print(f"Error getting detailed species info: {e}")
+        # Provide fallback data if API call fails
+        return {
+            "description": f"{common_name} ({scientific_name}) is a native Australian species found in the {location_name} region.",
+            "size": "Size varies by individual",
+            "habitat": f"Native to {location_name} and surrounding areas",
+            "distribution": "Found in parts of Australia",
+            "diet": "Consumes food typical for its species",
+            "lifespan": "Several years in suitable conditions",
+            "fun_facts": [
+                f"This {animal_type} is adapted to the Australian environment",
+                f"It was documented in biodiversity records near {location_name}",
+                "Australia has many unique native species found nowhere else on Earth"
+            ]
+        }
+
+# Replace the get_species_image function with this:
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
