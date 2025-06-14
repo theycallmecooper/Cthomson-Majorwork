@@ -673,7 +673,10 @@ def get_detailed_species_info(species, badges, location_name):
             ]
         }
 
-# Replace the get_species_image function with this:
+@app.route("/support")
+def support():
+    """Buy Me a Coffee support page"""
+    return render_template("support.html")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
