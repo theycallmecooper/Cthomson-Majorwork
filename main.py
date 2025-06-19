@@ -673,10 +673,10 @@ def get_detailed_species_info(species, badges, location_name):
             ]
         }
 
-@app.route("/support")
-def support():
-    """Buy Me a Coffee support page"""
-    return render_template("support.html")
+@app.route("/wildlife-game")
+def wildlife_game():
+    """Interactive wildlife matching game"""
+    return render_template("wildlife_game.html")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
