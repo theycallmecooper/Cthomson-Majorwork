@@ -13,6 +13,26 @@ openai_client = OpenAI(api_key="")
 app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
 
+def add_csp_headers(response):
+    """
+    Add Content Security Policy headers to all responses
+    """
+    csp = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; "
+        "img-src 'self' data: https:; "
+        "font-src 'self' https://cdnjs.cloudflare.com; "
+        "connect-src 'self' https://api.inaturalist.org https://biocache.ala.org.au; "
+        "frame-src 'self'; "
+        "object-src 'none';"
+    )
+    response.headers['Content-Security-Policy'] = csp
+    return response
+
+# Add this line to register the CSP handler
+app.after_request(add_csp_headers)
+
 class Species:
     """Class representing a wildlife species with its properties"""
     def __init__(self, scientific_name, common_name, lat=None, lng=None, source=None):
