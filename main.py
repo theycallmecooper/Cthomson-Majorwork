@@ -3,6 +3,7 @@ import time
 import json
 import os
 import random
+import math
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from openai import OpenAI
@@ -417,6 +418,10 @@ def get_species_json():
 
     if lat is None or lng is None:
         return jsonify({"error": "Missing lat/lng parameters"}), 400
+    
+    # Check if location is near Australia
+    if not is_near_australia(lat, lng):
+        return jsonify({"error": "Location must be within 100km of Australia's shores", "location_valid": False}), 400
 
     try:
         # Get data from ALA
@@ -461,6 +466,10 @@ def view_species_page():
 
     if lat is None or lng is None:
         return render_template("species.html", species=[])
+        
+    # Check if location is near Australia
+    if not is_near_australia(lat, lng):
+        return render_template("species.html", error="Location must be within 100km of Australia's shores")
 
     try:
         # Get data from ALA
@@ -697,6 +706,23 @@ def get_detailed_species_info(species, badges, location_name):
 def wildlife_game():
     """Interactive wildlife matching game"""
     return render_template("wildlife_game.html")
+
+def is_near_australia(latitude, longitude, max_distance_km=100):
+    """
+    Check if coordinates are within or near Australia's shores
+    """
+    # Australia's approximate bounding box (with buffer)
+    min_lat = -44.0  # Southernmost point with buffer
+    max_lat = -10.0  # Northernmost point with buffer
+    min_lng = 112.0  # Westernmost point with buffer
+    max_lng = 154.0  # Easternmost point with buffer
+    
+    # Tasmania
+    if -44.0 <= latitude <= -40.0 and 143.0 <= longitude <= 149.0:
+        return True
+    
+    # Check if coordinates are within the main bounding box
+    return min_lat <= latitude <= max_lat and min_lng <= longitude <= max_lng
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

@@ -130,17 +130,49 @@
       map.setView([lat, lng], 10);
     }
 
+    function isNearAustralia(lat, lng) {
+      // Australia's approximate bounding box (with buffer)
+      const minLat = -44.0;
+      const maxLat = -10.0;
+      const minLng = 112.0;
+      const maxLng = 154.0;
+      
+      // Tasmania
+      if (lat >= -44.0 && lat <= -40.0 && lng >= 143.0 && lng <= 149.0) {
+          return true;
+      }
+      
+      // Check if coordinates are within the main bounding box
+      return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
+    }
+
     function fetchSpecies(lat, lng) {
+      // Validate location first
+      if (!isNearAustralia(lat, lng)) {
+        alert("Please select a location within 100km of Australia's shores.");
+        return;
+      }
+      
       currentLat = lat;
       currentLng = lng;
       fetch(`/species?lat=${lat}&lng=${lng}`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(data => {
+                    throw new Error(data.error || "Error fetching species data");
+                });
+            }
+            return res.json();
+        })
         .then(data => {
           displaySpecies(data);
           initMap(lat, lng);
           displaySpeciesOnMap(data, lat, lng);
         })
-        .catch(err => console.error("Error:", err));
+        .catch(err => {
+            console.error("Error:", err);
+            alert(err.message);
+        });
     }
 
     function displaySpecies(species) {
@@ -222,6 +254,13 @@
       e.preventDefault();
       const lat = parseFloat(document.getElementById("manualLat").value);
       const lng = parseFloat(document.getElementById("manualLng").value);
+      
+      // Validate location
+      if (!isNearAustralia(lat, lng)) {
+        alert("Please enter coordinates within 100km of Australia's shores.");
+        return;
+      }
+      
       fetchSpecies(lat, lng);
     });
 
