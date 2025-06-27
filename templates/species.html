@@ -48,17 +48,27 @@
 </head>
 <body>
     <nav class="navbar navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Dangerous Species Finder</a>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">BushBuddy</a>
+        <div class="d-flex">
+          <a href="/species-finder" class="nav-link text-white active">Species Finder</a>
+          <a href="/toxicology" class="nav-link text-white ms-3">Toxicology</a>
+          <a href="/dictionary" class="nav-link text-white ms-3">Dictionary</a>
+          <a href="/wildlife-spotlight" class="nav-link text-white ms-3">Wildlife Spotlight</a>
+          <a href="/wildlife-game" class="nav-link text-white ms-3">Wildlife Game</a>
         </div>
+      </div>
     </nav>
 
     <header class="header">
-        <h1>Dangerous Species Found Near You</h1>
+        <h1>Species Found Near You</h1>
     </header>
 
     <div class="container mt-4">
-        <a href="/" class="btn btn-secondary mb-3">← Menu</a>
+        <div class="d-flex">
+            <a href="/" class="btn btn-secondary mb-3">← Home</a>
+            <a href="/species-finder" class="btn btn-primary mb-3 ms-2">← Back to Search</a>
+        </div>
         
         <div id="species-list">
             {% if species %}
