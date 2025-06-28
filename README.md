@@ -1,16 +1,16 @@
-🦘 BushBuddy - Australian Wildlife Safety
+🦘 <b>BushBuddy - Australian Wildlife Safety</b>
 <div align="center">
-  <img alt="BushBuddy Banner" src="https://via.placeholder.com/1200x300/2E8B57/FFFFFF?text=BushBuddy+-+Australian+Wildlife+Safety&font=Arial" />
-  <p><strong>A comprehensive Australian wildlife safety application that helps identify potentially dangerous species in your vicinity and provides essential safety information.</strong></p>
+  <img alt="BushBuddy Banner" src="static/bushbuddy-banner.png" />
+  <p><strong>A comprehensive native Australian wildlife guide that helps identify potentially dangerous species in your area, and provide essential information at your fingertips.</strong></p>
   <p>
     <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg">
     <img alt="Python" src="https://img.shields.io/badge/python-3.6+-green.svg">
     <img alt="Flask" src="https://img.shields.io/badge/flask-2.0+-yellow.svg">
-    <img alt="Stars" src="https://img.shields.io/github/stars/yourusername/bushbuddy?style=social">
+    <img alt="Status" src="https://img.shields.io/badge/status-active-brightgreen">
   </p>
 </div>
 
-✨ Features
+✨ <b>Features</b>
 <table>
 <tr>
 <td width="50%">
@@ -36,34 +36,34 @@ Optimized for use on any device, perfect for outdoor adventures.<br>
 </tr>
 </table>
 
-📷 Screenshots
+📷 <b>Screenshots</b>
 <div align="center">
   <table>
     <tr>
       <td align="center">
-        <img src="https://via.placeholder.com/400x225/228B22/FFFFFF?text=Species+Finder" width="400" alt="Species Finder"/>
-        <br><strong>Species Finder</strong>
+        <img src="static/main-page.png" width="400" alt="Species Finder"/>
+        <br><strong>Main Page</strong>
       </td>
       <td align="center">
-        <img src="https://via.placeholder.com/400x225/FF6347/FFFFFF?text=Wildlife+Spotlight" width="400" alt="Wildlife Spotlight"/>
-        <br><strong>Wildlife Spotlight</strong>
+        <img src="static/species-page.png" width="400" alt="Wildlife Spotlight"/>
+        <br><strong>Species Finder</strong>
       </td>
     </tr>
     <tr>
       <td align="center">
-        <img src="https://via.placeholder.com/400x225/4169E1/FFFFFF?text=Toxicology+Guide" width="400" alt="Toxicology Guide"/>
-        <br><strong>Toxicology Guide</strong>
+        <img src="static/toxicology-page.png" width="400" alt="Toxicology Guide"/>
+        <br><strong>Toxicology Handbook</strong>
       </td>
       <td align="center">
-        <img src="https://via.placeholder.com/400x225/DAA520/FFFFFF?text=Wildlife+Game" width="400" alt="Wildlife Game"/>
-        <br><strong>Wildlife Safety Game</strong>
+        <img src="static/spotlight-page.png" width="400" alt="Wildlife Game"/>
+        <br><strong>Wildlife Spotlight</strong>
       </td>
     </tr>
   </table>
 </div>
 
-🚀 Quick Start
-Prerequisites
+🚀 <b>Quick Start
+Prerequisites</b>
 
 Python 3.6 or higher
 Git
@@ -103,7 +103,7 @@ Open your browser
 Navigate to http://localhost:5000 to start using BushBuddy!
 
 
-🛠️ Tech Stack
+🛠️ <b>Tech Stack</b>
 <div align="center">
   <table>
     <tr>
@@ -126,61 +126,38 @@ Navigate to http://localhost:5000 to start using BushBuddy!
     </tr>
   </table>
 </div>
-APIs & Services
+<b>APIs & Services:</b>
+<br>
+<b>Atlas of Living Australia</b> - Comprehensive biodiversity data<br>
+<br>
+<b>iNaturalist</b> - Species identification and occurrence data<br>
+<br>
+<b>OpenAI</b> - AI-powered content generation and analysis and data support<br>
+<br>
+<br>
+<br>
 
-Atlas of Living Australia - Comprehensive biodiversity data
-iNaturalist - Species identification and occurrence data
-OpenAI - AI-powered content generation and analysis
-
-
-📋 Project Structure
-bushbuddy/
-├── 📁 static/
-│   ├── 🎨 css/
-│   ├── 📱 js/
-│   └── 🖼️ images/
-├── 📁 templates/
-│   ├── 🏠 index.html
-│   ├── 🔍 species_finder.html
-│   └── 📚 other_pages.html
-├── 📄 main.py
-├── 📄 requirements.txt
-├── 📄 .env.example
-└── 📖 README.md
-
-🤝 Contributing
+🤝 <b>Contributing</b>
 We welcome contributions! Here's how you can help:
+<br>
+<br>
 
-Fork the repository
-Create a feature branch (git checkout -b feature/AmazingFeature)
-Commit your changes (git commit -m 'Add some AmazingFeature')
-Push to the branch (git push origin feature/AmazingFeature)
-Open a Pull Request
-
-Development Guidelines
-
-Follow PEP 8 style guidelines for Python code
-Add tests for new features
-Update documentation as needed
-Ensure all tests pass before submitting PR
-
-
-📄 License
+📄 <b>License</b>
 This project is licensed under the MIT License - see the LICENSE file for details.
+<br>
+<br>
 
-🙏 Acknowledgments
+🙏 <b>Acknowledgments</b><br>
+Atlas of Living Australia for providing comprehensive biodiversity data<br>
+iNaturalist community for species identification resources<br>
+OpenAI for AI capabilities<br>
+Australian wildlife researchers and conservationists<br>
+<br>
+<br>
 
-Atlas of Living Australia for providing comprehensive biodiversity data
-iNaturalist community for species identification resources
-OpenAI for AI capabilities
-Australian wildlife researchers and conservationists
-
-
-📞 Support
-
+📞 <b>Support</b>
 🐛 Found a bug? Open an issue
 💡 Have a feature request? Start a discussion
-📧 Need help? Contact us at support@bushbuddy.app
 
 
 <div align="center">
