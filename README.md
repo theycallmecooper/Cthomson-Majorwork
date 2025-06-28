@@ -72,7 +72,7 @@ OpenAI API key
 Installation
 
 Clone the repository
-bashgit clone https://github.com/yourusername/bushbuddy.git
+bashgit clone https://github.com/ytheycallmecooper/Cthomson-Majorwork.git
 cd bushbuddy
 
 Create and activate virtual environment
