@@ -68,10 +68,18 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">BushBuddy</a>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">BushBuddy</a>
+        <div class="d-flex">
+          <a href="/species-finder" class="nav-link text-white" id="nav-species">Species Finder</a>
+          <a href="/toxicology" class="nav-link text-white ms-3" id="nav-toxicology">Toxicology</a>
+          <a href="/dictionary" class="nav-link text-white ms-3" id="nav-dictionary">Dictionary</a>
+          <a href="/wildlife-spotlight" class="nav-link text-white ms-3" id="nav-spotlight">Wildlife Spotlight</a>
+          <a href="/wildlife-game" class="nav-link text-white ms-3" id="nav-game">Wildlife Game</a>
         </div>
+      </div>
     </nav>
 
     <header class="header">
@@ -190,5 +198,23 @@
             <p><small>For educational purposes only. Always seek medical attention in case of emergency</small></p>
         </div>
     </footer>
+
+    <!-- Highlight the current page in the navigation -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        let navId = '';
+        
+        if (currentPath.includes('species')) navId = 'nav-species';
+        else if (currentPath.includes('toxic')) navId = 'nav-toxicology';
+        else if (currentPath.includes('dictionary')) navId = 'nav-dictionary';
+        else if (currentPath.includes('spotlight')) navId = 'nav-spotlight';
+        else if (currentPath.includes('game')) navId = 'nav-game';
+        
+        if (navId) {
+          document.getElementById(navId).classList.add('active');
+        }
+      });
+    </script>
 </body>
 </html>

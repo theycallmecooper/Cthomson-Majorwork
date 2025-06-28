@@ -102,10 +102,18 @@
     </style>
 </head>
 <body>
+    <!-- Navigation bar added here -->
     <nav class="navbar navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Australian Wildlife Safety</a>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">BushBuddy</a>
+        <div class="d-flex">
+          <a href="/species-finder" class="nav-link text-white" id="nav-species">Species Finder</a>
+          <a href="/toxicology" class="nav-link text-white ms-3" id="nav-toxicology">Toxicology</a>
+          <a href="/dictionary" class="nav-link text-white ms-3" id="nav-dictionary">Dictionary</a>
+          <a href="/wildlife-spotlight" class="nav-link text-white ms-3" id="nav-spotlight">Wildlife Spotlight</a>
+          <a href="/wildlife-game" class="nav-link text-white ms-3" id="nav-game">Wildlife Game</a>
         </div>
+      </div>
     </nav>
 
     <header class="header">
@@ -347,6 +355,22 @@
             } else if (searchQuery.includes('first aid') || searchQuery.includes('pressure')) {
                 document.getElementById('first-aid').scrollIntoView({behavior: 'smooth'});
             }
+        });
+
+        // Highlight the current page in the navigation
+        document.addEventListener('DOMContentLoaded', function() {
+          const currentPath = window.location.pathname;
+          let navId = '';
+          
+          if (currentPath.includes('species')) navId = 'nav-species';
+          else if (currentPath.includes('toxic')) navId = 'nav-toxicology';
+          else if (currentPath.includes('dictionary')) navId = 'nav-dictionary';
+          else if (currentPath.includes('spotlight')) navId = 'nav-spotlight';
+          else if (currentPath.includes('game')) navId = 'nav-game';
+          
+          if (navId) {
+            document.getElementById(navId).classList.add('active');
+          }
         });
     </script>
 </body>
