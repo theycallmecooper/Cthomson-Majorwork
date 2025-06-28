@@ -14,20 +14,24 @@
 <table>
 <tr>
 <td width="50%">
-🔍 Species Finder
-Identify wildlife in your area using geolocation technology. Get instant information about species near you.
-🧪 Toxicology Handbook
-Comprehensive database of venomous and dangerous Australian creatures with safety protocols.
-📚 Scientific Dictionary
-Learn about Australian wildlife terminology with detailed explanations and pronunciations.
+🔍 <b>Species Finder:</b>
+Identify wildlife in your area using geolocation technology. Get instant information about species near you.<br>
+  <br>
+🧪 <b>Toxicology Handbook:</b>
+Comprehensive database of venomous and dangerous Australian creatures with safety protocols.<br>
+  <br>
+📚 <b>Scientific Dictionary:</b>
+Learn about Australian wildlife terminology with detailed explanations and pronunciations.<br>
 </td>
 <td width="50%">
-🦘 Wildlife Spotlight
-Discover random Australian species with detailed profiles, habitats, and fascinating facts.
-🎮 Wildlife Safety Game
-Interactive matching game that teaches essential safety tips in an engaging way.
-📱 Mobile Responsive
-Optimized for use on any device, perfect for outdoor adventures.
+🦘 <b>Wildlife Spotlight</b>
+Discover random Australian species with detailed profiles, habitats, and fascinating facts.<br>
+  <br>
+🎮 <b>Wildlife Safety Game</b>
+Interactive matching game that teaches essential safety tips in an engaging way.<br>
+  <br>
+📱 <b>Mobile Responsive</b>
+Optimized for use on any device, perfect for outdoor adventures.<br>
 </td>
 </tr>
 </table>
