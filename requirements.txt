@@ -1,0 +1,25 @@
+Dependencies:
+
+flask==2.2.3
+flask-cors==3.0.10
+requests==2.28.2
+python-dotenv==1.0.0
+openai==1.3.0
+
+
+
+
+Cthomson-Majorwork/
+├── main.py                 
+├── common_name_lookup.json 
+├── requirements.txt        
+├── README.md              
+├── static/                 
+└── templates/              
+    ├── home.html           
+    ├── index.html          
+    ├── species.html        
+    ├── toxicology.html     
+    ├── dictionary.html     
+    ├── spotlight.html      
+    └── wildlife_game.html  
