@@ -133,11 +133,9 @@
                         <input type="text" class="form-control" placeholder="Search by species, symptom, or treatment...">
                         <button class="btn btn-primary" type="button" id="searchButton">Search</button>
                     </div>
-                    <div class="mt-2">
-                        <button class="btn btn-sm btn-outline-secondary me-1">Snake Venom</button>
-                        <button class="btn btn-sm btn-outline-secondary me-1">Spider Bites</button>
-                        <button class="btn btn-sm btn-outline-secondary me-1">Marine Stings</button>
-                        <button class="btn btn-sm btn-outline-secondary me-1">First Aid</button>
+
+                    <div id="noResultsMessage" class="alert alert-info mt-2 d-none">
+                        No results found :/
                     </div>
                 </div>
 
@@ -344,6 +342,10 @@
         // Simple search functionality (placeholder - would need backend integration for real search)
         document.getElementById('searchButton').addEventListener('click', function() {
             const searchQuery = document.querySelector('.search-area input').value.toLowerCase();
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            
+            // Hide the message before each new search
+            noResultsMessage.classList.add('d-none');
             
             // Very basic client-side search example
             if (searchQuery.includes('snake')) {
@@ -354,6 +356,18 @@
                 document.getElementById('marine').scrollIntoView({behavior: 'smooth'});
             } else if (searchQuery.includes('first aid') || searchQuery.includes('pressure')) {
                 document.getElementById('first-aid').scrollIntoView({behavior: 'smooth'});
+            } else {
+                // Show the no results message if no matches found
+                noResultsMessage.classList.remove('d-none');
+                // Scroll to the message
+                noResultsMessage.scrollIntoView({behavior: 'smooth'});
+            }
+        });
+
+        // Add the Enter key functionality to the search input
+        document.querySelector('.search-area input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('searchButton').click();
             }
         });
 
