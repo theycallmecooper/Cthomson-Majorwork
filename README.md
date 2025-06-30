@@ -94,7 +94,7 @@ bash# Create .env file
 touch .env
 
 # Add your OpenAI API key
-echo "OPENAI_API_KEY=your_api_key_here" > .env
+ENTER YOUR OPENAI API KEY TO MAIN.PY LINE 12
 
 Run the application
 bashpython main.py
