@@ -9,7 +9,7 @@ from flask_cors import CORS
 from openai import OpenAI
 
 # Initialize OpenAI client
-openai_client = OpenAI(api_key="")
+openai_client = OpenAI(api_key="ENTER API KEY HERE")  # Replace with your actual API key
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
@@ -709,20 +709,71 @@ def wildlife_game():
 
 def is_near_australia(latitude, longitude, max_distance_km=100):
     """
-    Check if coordinates are within or near Australia's shores
+    Check if coordinates are within or near Australia's shores (within max_distance_km)
+    Uses Haversine formula to calculate accurate distances to coastal points
     """
-    # Australia's approximate bounding box (with buffer)
-    min_lat = -44.0  # Southernmost point with buffer
-    max_lat = -10.0  # Northernmost point with buffer
-    min_lng = 112.0  # Westernmost point with buffer
-    max_lng = 154.0  # Easternmost point with buffer
+    # Australia's approximate bounding box (with extra buffer)
+    min_lat = -47.0  # Southernmost point with buffer
+    max_lat = -7.0   # Northernmost point with buffer
+    min_lng = 109.0  # Westernmost point with buffer
+    max_lng = 157.0  # Easternmost point with buffer
     
-    # Tasmania
-    if -44.0 <= latitude <= -40.0 and 143.0 <= longitude <= 149.0:
-        return True
+    # Quick rejection: if outside the expanded bounding box, return False
+    if not (min_lat <= latitude <= max_lat and min_lng <= longitude <= max_lng):
+        return False
     
-    # Check if coordinates are within the main bounding box
-    return min_lat <= latitude <= max_lat and min_lng <= longitude <= max_lng
+    # Key coastal points around Australia (lat, lng)
+    coastal_points = [
+        # Eastern coast
+        (-28.647, 153.615),  # Byron Bay
+        (-33.852, 151.211),  # Sydney
+        (-37.830, 144.983),  # Melbourne
+        (-42.880, 147.324),  # Hobart
+        # Southern coast
+        (-38.368, 141.584),  # Portland
+        (-35.021, 137.781),  # Port Lincoln
+        (-34.967, 117.889),  # Albany
+        # Western coast
+        (-31.997, 115.861),  # Perth
+        (-23.700, 113.580),  # Carnarvon
+        (-17.964, 122.221),  # Broome
+        # Northern coast
+        (-12.460, 130.846),  # Darwin
+        (-16.923, 145.778),  # Cairns
+        (-19.257, 146.819),  # Townsville
+        # Tasmania
+        (-41.244, 146.397),  # Devonport
+        (-43.076, 147.268)   # South Tasmania
+    ]
+    
+    # Calculate distance to nearest coastal point
+    min_distance = float('inf')
+    for point_lat, point_lng in coastal_points:
+        distance = calculate_haversine_distance(latitude, longitude, point_lat, point_lng)
+        min_distance = min(min_distance, distance)
+        
+        # Early return if we find a point within max_distance
+        if distance <= max_distance_km:
+            return True
+    
+    # Include exact matches at the 100km border
+    return min_distance <= max_distance_km
+
+def calculate_haversine_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # Convert decimal degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    
+    # Haversine formula
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a)) 
+    r = 6371  # Radius of earth in kilometers
+    return c * r
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
